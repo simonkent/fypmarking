@@ -26,4 +26,5 @@ case class UnmoderatedDoubleMarkerAssessment(assessment: UnconfirmedDoubleMarker
   def assessment1 = assessment.assessment1 
   def assessment2 = assessment.assessment2 
   
+  def isFinal = false
 }

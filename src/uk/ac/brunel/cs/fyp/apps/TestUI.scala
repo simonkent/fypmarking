@@ -1,4 +1,4 @@
-package uk.ac.brunel.cs.fyp
+package uk.ac.brunel.cs.fyp.apps
 
 import uk.ac.brunel.cs.fyp.assessment.SingleMarkerAssessment
 import uk.ac.brunel.cs.fyp.StudentRegistry

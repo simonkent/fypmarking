@@ -25,4 +25,6 @@ class AgreedDoubleMarkerAssessment(unmoderatedAssessment: UnmoderatedDoubleMarke
     def assessment2 = unmoderatedAssessment.assessment.assessment2
 	
 	def grade: Option[Grade] = Some(agreedGrade);
+	
+	def isFinal = true
 }

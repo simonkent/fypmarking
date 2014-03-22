@@ -8,4 +8,6 @@ case class UnconfirmedDoubleMarkerAssessment(
 		assessment2: SingleMarkerAssessment) extends DoubleMarkerAssessment {
     
     def grade: Option[Grade] = None 
+    
+    def isFinal = false
 }
