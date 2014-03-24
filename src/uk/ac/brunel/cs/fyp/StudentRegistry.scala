@@ -33,7 +33,10 @@ object StudentRegistry {
 	}
 	
 	def addSubmission(student: Student, programme: String, title: String):Submission ={
-	  new ConcreteSubmission(student, programme, title)
+	  val key = (student, title)
+	  val value = new ConcreteSubmission(student, programme, title)
+	  submissions += (key -> value)
+	  value
 	}
 	
 	def getSubmission(student: Student, title: String): Option[Submission] ={
@@ -46,6 +49,14 @@ object StudentRegistry {
 	
 	def addAssessments(assessments: Seq[SingleMarkerAssessment]) {
 	  assessments.map(assessment => recordAssessment(assessment))
+	}
+	
+	def assessment(submission: Submission):Option[Assessment] ={
+	  if (assessments.contains(submission)) {
+	    Some(assessments(submission))
+	  } else {
+	    None
+	  }
 	}
 	
 	def recordAssessment(assessment: SingleMarkerAssessment) {
