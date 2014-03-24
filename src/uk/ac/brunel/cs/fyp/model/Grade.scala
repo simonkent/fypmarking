@@ -1,4 +1,4 @@
-package uk.ac.brunel.cs.fyp
+package uk.ac.brunel.cs.fyp.model
 
 case class Grade(gradePoint: Int) {
 	def this(grade: String)= {

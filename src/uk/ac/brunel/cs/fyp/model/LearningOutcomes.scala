@@ -1,4 +1,4 @@
-package uk.ac.brunel.cs.fyp
+package uk.ac.brunel.cs.fyp.model
 
 case class LearningOutcomes(
 		problemDefinition: Boolean,

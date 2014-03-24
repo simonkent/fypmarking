@@ -1,6 +1,4 @@
-package uk.ac.brunel.cs.fyp
-
-import uk.ac.brunel.cs.fyp.Student
+package uk.ac.brunel.cs.fyp.model
 
 trait Submission {
 	def student: Student

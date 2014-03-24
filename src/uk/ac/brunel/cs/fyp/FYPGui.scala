@@ -31,5 +31,4 @@ object FYPGui extends SimpleSwingApplication {
     size = new Dimension(300, 200)
   }
   
-  //val workbook: XSSFWorkbook = null
 }

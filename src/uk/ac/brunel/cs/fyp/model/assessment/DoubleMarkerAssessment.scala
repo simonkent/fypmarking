@@ -1,6 +1,6 @@
-package uk.ac.brunel.cs.fyp.assessment
+package uk.ac.brunel.cs.fyp.model.assessment
 
-import uk.ac.brunel.cs.fyp.Submission
+import uk.ac.brunel.cs.fyp.model.Submission
 
 trait DoubleMarkerAssessment extends Assessment {
   def assessment1: SingleMarkerAssessment

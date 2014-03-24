@@ -1,11 +1,13 @@
 package uk.ac.brunel.cs.fyp
 
 import scala.collection.mutable.Map
-import uk.ac.brunel.cs.fyp.assessment.SingleMarkerAssessment
-import uk.ac.brunel.cs.fyp.assessment.DoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.assessment.UnconfirmedDoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.assessment.Assessment
-import uk.ac.brunel.cs.fyp.assessment.UnconfirmedDoubleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.DoubleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.Assessment
+import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.Student
+import uk.ac.brunel.cs.fyp.model.Submission
 
 case class ConcreteStudent(val number: String) extends Student
 case class ConcreteSubmission(val student: Student, val programme: String, val title: String) extends Submission

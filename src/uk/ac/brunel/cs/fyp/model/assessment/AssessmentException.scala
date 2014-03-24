@@ -1,4 +1,4 @@
-package uk.ac.brunel.cs.fyp.assessment
+package uk.ac.brunel.cs.fyp.model.assessment
 
 import scala.util.control.Exception
 

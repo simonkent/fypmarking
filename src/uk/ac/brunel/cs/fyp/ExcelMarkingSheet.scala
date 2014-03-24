@@ -11,6 +11,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.FileInputStream
 import org.apache.poi.ss.util.AreaReference
 import org.apache.poi.ss.usermodel.Cell
+import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
+import uk.ac.brunel.cs.fyp.model.Marker
+import uk.ac.brunel.cs.fyp.model.LearningOutcomes
+import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
 
 class ExcelMarkingSheet(file: File) {
    private val workbook = new XSSFWorkbook(new FileInputStream(file))

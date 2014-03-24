@@ -1,20 +1,20 @@
 package uk.ac.brunel.cs.fyp.apps
 
-import uk.ac.brunel.cs.fyp.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.DoubleMarkerAssessment
 import uk.ac.brunel.cs.fyp.StudentRegistry
-import org.apache.poi.xssf.usermodel.XSSFSheet
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import uk.ac.brunel.cs.fyp.assessment.Assessment
-import uk.ac.brunel.cs.fyp.Submission
-import java.io.FileOutputStream
-import java.io.File
-import uk.ac.brunel.cs.fyp.assessment.SingleMarkerAssessment
-import org.apache.poi.ss.usermodel.Cell
-import uk.ac.brunel.cs.fyp.assessment.DoubleMarkerAssessment
-
-object LoadIndividualMarkingSheets extends App {
+import uk.ac.brunel.cs.fyp.model.Submission
+import uk.ac.brunel.cs.fyp.model.Grade
+import uk.ac.brunel.cs.fyp.model.assessment.Assessment
+import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
 import uk.ac.brunel.cs.fyp.MarkingSheetReader
-import uk.ac.brunel.cs.fyp.Grade
+import java.io.File
+import java.io.FileOutputStream
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.ss.usermodel.Cell
+
+object CollateMarkingSheets extends App {
+
 	// Initialise the Student Registry
 	val reg = StudentRegistry
   

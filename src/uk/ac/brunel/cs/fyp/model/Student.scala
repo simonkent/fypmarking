@@ -1,4 +1,4 @@
-package uk.ac.brunel.cs.fyp
+package uk.ac.brunel.cs.fyp.model
 
 trait Student {
 	def number: String

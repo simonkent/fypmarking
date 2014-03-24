@@ -1,11 +1,12 @@
 package uk.ac.brunel.cs.fyp.apps
 
-import uk.ac.brunel.cs.fyp.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
 import uk.ac.brunel.cs.fyp.StudentRegistry
+import uk.ac.brunel.cs.fyp.MarkingSheetReader
+import uk.ac.brunel.cs.fyp.model.Grade
 
 object TestUI extends App {
-import uk.ac.brunel.cs.fyp.MarkingSheetReader
-import uk.ac.brunel.cs.fyp.Grade
+
 	// Initialise the Student Registry
 	val reg = StudentRegistry
   

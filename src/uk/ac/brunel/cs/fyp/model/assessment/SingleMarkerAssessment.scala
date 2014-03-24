@@ -1,10 +1,10 @@
-package uk.ac.brunel.cs.fyp.assessment
+package uk.ac.brunel.cs.fyp.model.assessment
 
-import uk.ac.brunel.cs.fyp.Submission
-import uk.ac.brunel.cs.fyp.Marker
-import uk.ac.brunel.cs.fyp.ProgrammeRequirements
-import uk.ac.brunel.cs.fyp.LearningOutcomes
-import uk.ac.brunel.cs.fyp.Grade
+import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
+import uk.ac.brunel.cs.fyp.model.Submission
+import uk.ac.brunel.cs.fyp.model.Grade
+import uk.ac.brunel.cs.fyp.model.LearningOutcomes
+import uk.ac.brunel.cs.fyp.model.Marker
 
 case class SingleMarkerAssessment (
   val submission: Submission,
