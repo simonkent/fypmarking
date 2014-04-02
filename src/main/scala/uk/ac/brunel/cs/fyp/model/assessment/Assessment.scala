@@ -6,7 +6,9 @@ import uk.ac.brunel.cs.fyp.model.Grade
 trait Assessment{
   def submission: Submission
   def grade: Option[Grade]
-  
+
+  def isFinal: Boolean
+
   protected def checkedGrade(go: Option[Grade]):Grade ={
     grade match {
       case Some(g: Grade) => g;

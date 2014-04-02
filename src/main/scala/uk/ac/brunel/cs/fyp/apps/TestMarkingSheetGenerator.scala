@@ -2,7 +2,7 @@ package uk.ac.brunel.cs.fyp
 
 import scala.util.Random
 
-object TestMarkingSheetGenerator extends Application {
+object TestMarkingSheetGenerator extends App {
 	val directory = "/Users/simonkent/Desktop/Marking Sheets"
 	
 	val r = new Random()

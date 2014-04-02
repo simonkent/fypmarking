@@ -14,4 +14,11 @@ case class SingleMarkerAssessment (
   val minimumStandards: String,
   val justification: String,
   val grade: Option[Grade]
-  ) extends Assessment 
+  ) extends Assessment with Justification {
+  grade match {
+    case None => throw new AssessmentException("It is not valid to create a SingleMarkerAssessment without a grade")
+    case _ => // we're happy
+  }
+
+  override def isFinal: Boolean = true
+}

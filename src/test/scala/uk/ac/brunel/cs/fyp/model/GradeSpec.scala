@@ -1,7 +1,5 @@
 package uk.ac.brunel.cs.fyp.model
 
-import uk.ac.brunel.cs.fyp.model.Grade
-
 class GradeSpec extends UnitSpec {
   
 	val validGrades = List("A*","A+","A","A-",
@@ -10,7 +8,7 @@ class GradeSpec extends UnitSpec {
 					    "D+","D","D-",
 					    "E+","E","E-",
 					    "F")
-    val validGradePoints = List(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17).reverse
+  val validGradePoints = List(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17).reverse
     
     
     
