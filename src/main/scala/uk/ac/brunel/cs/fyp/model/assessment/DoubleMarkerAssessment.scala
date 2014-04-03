@@ -12,4 +12,6 @@ trait DoubleMarkerAssessment extends Assessment {
     throw new IllegalArgumentException("Two assessments must be for the same submission")
   }	
   def submission: Submission = {assessment1.submission}
+  
+  def isFinal: Boolean
 }

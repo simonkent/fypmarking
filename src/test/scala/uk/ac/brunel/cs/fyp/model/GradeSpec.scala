@@ -16,7 +16,26 @@ class GradeSpec extends UnitSpec {
 	  assert(validGrades.map(g => new Grade(g)).map(g => g.gradePoint) == validGradePoints) 
     }
 	
-	"A grade" should "also be created with an Int between 1..17 which corresponds to grades F..A*" in {
+	it should "also be created with an Int between 1..17 which corresponds to grades F..A*" in {
 	  assert(validGradePoints.map(gp => new Grade(gp)).map(g => g.grade) == validGrades) 
     }
+
+  "Subtraction of a grade from itself" should "equal 0" in {
+    val g = new Grade("A*")
+    assert(g-g==0)
+  }
+
+  "Subtraction of grades" should "work" in {
+    assert(new Grade("A*") - new Grade("C") == 8)
+  }
+
+  "The difference between a grade and itself" should "be zero" in {
+    val a = new Grade("A")
+    val b = new Grade("B")
+    assert((a diff b)==(b diff a))
+  }
+
+  it should "be calculated correctly" in {
+    assert((new Grade("A") diff new Grade("C"))==6)
+  }
 }

@@ -8,8 +8,6 @@ import org.scalamock.scalatest.MockFactory
  */
 class UnconfirmedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactory {
 
-  case class FixtureParam(dma: UnconfirmedDoubleMarkerAssessment)
-
   val mockStudent = mock[Student]
   val mockSubmission = mock[Submission]
 
