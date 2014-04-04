@@ -25,7 +25,7 @@ class ExcelMarkingSheet(file: File) {
       case Some(d: Double) => d.toString
       case Some(i: Int) => i.toString
       case None => ""
-      case _ => throw new IllegalArgumentException("Contents of cell named \" " + name + "\" cannot be returned as a String")
+      case _ => throw new IllegalArgumentException("Contents of cell named \"" + name + "\" in file " + file.getName() + " cannot be returned as a String")
     }
   }
    
@@ -34,7 +34,7 @@ class ExcelMarkingSheet(file: File) {
       case Some(i: Int) => i
       case Some(d: Double) => d.toInt
       case None => 0
-      case _ => throw new IllegalArgumentException("Contents of cell named \" " + name + "\" cannot be returned as an Integer")
+      case _ => throw new IllegalArgumentException("Contents of cell named \"" + name + "\" in file " + file.getName() + " cannot be returned as an Integer")
     }
    }
    
@@ -42,7 +42,7 @@ class ExcelMarkingSheet(file: File) {
      getValueFromNamedCell(name) match {
       case Some(d: Double) => d
       case None => 0.0
-      case _ => throw new IllegalArgumentException("Contents of cell named \" " + name + "\" cannot be returned as a Double")
+      case _ => throw new IllegalArgumentException("Contents of cell named \"" + name + "\" in file " + file.getName() + " cannot be returned as a Double")
     }
    }
    

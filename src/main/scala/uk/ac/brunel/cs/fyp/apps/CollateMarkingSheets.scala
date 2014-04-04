@@ -41,7 +41,6 @@ object CollateMarkingSheets extends App {
 
 	var rowNumber = 0;
 	
-	//assessments.foldLeft(sheet)((acc, a) => addAssessmentToSheet(a, acc))
 	reg.submissions.values.map(s => {addAssessmentToSheet(s, sheet, rowNumber); rowNumber+=1;})
 	
 	val fileOut = new FileOutputStream(new File("/Users/simonkent/Desktop/Results/out.xlsx"))
@@ -87,6 +86,8 @@ object CollateMarkingSheets extends App {
 	
 	def addSingleMarkerAssessment(rb: RowBuilder, sma: SingleMarkerAssessment) {
 		rb.addNextCell(sma.marker.name)
+		rb.addNextCell(sma.programmeRequirements.justification);
+		rb.addNextCell(sma.programmeRequirements.met);
 	    rb.addNextCell(sma.learningOutcomes.problemDefinition)
 	    rb.addNextCell(sma.learningOutcomes.backgroundInvestigation)
 	    rb.addNextCell(sma.learningOutcomes.practicalApplication)
