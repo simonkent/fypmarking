@@ -49,8 +49,8 @@ class ExcelMarkingSheet(file: File) {
    private def getBooleanValueFromNamedCell(name: String): Boolean ={
      getValueFromNamedCell(name) match {
       case Some(b: Boolean) => b
-      case None => throw new IllegalStateException("Cannot return Boolean from a blank cell")
-      case _ => throw new IllegalArgumentException("cell named \" " + name + "\" cannot be returned as a Boolean")
+      case None => throw new IllegalStateException("Cannot return Boolean from a blank cell in file " + file.getName())
+      case _ => throw new IllegalArgumentException("cell named \" " + name + "\" cannot be returned as a Boolean in file " + file.getName())
     }
    }
   
@@ -81,7 +81,7 @@ class ExcelMarkingSheet(file: File) {
   }
   
   def studentNumber: String= {
-    "%d07".format(getIntValueFromNamedCell("Student_Number"))
+    "%7d".format(getIntValueFromNamedCell("Student_Number"))
   }
     
   def grade: String= {
