@@ -4,8 +4,10 @@ import java.io.File
 import java.io.FilenameFilter
 import scala.Array.canBuildFrom
 
-class MarkingSheetReader(dirString: String) {  
-  val directory = new File(dirString)
+class MarkingSheetReader(val directory: File) {
+  def this(dirString: String) {
+    this(new File(dirString))
+  }
   
   if (!directory.exists()) {
     throw new IllegalArgumentException("Path does not exist");
@@ -26,7 +28,12 @@ class MarkingSheetReader(dirString: String) {
     }
   
    directory.listFiles(filter).map(file => { println("Reading file " + file) ; 
-   											 ExcelSheet.parse(file) }).toList
+   											 ExcelSheet.parse(file) }).
+   							   filter(_ match {
+   							     case e: ExcelMarkingSheet => true
+   							     case _ => false
+   							     }).
+   							   toList
    
   }
   

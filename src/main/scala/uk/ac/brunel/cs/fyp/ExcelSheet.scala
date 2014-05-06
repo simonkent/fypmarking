@@ -7,21 +7,22 @@
 package uk.ac.brunel.cs.fyp
 
 import java.io.File
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.FileInputStream
-import org.apache.poi.ss.util.AreaReference
 import org.apache.poi.ss.usermodel.Cell
-import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
+import org.apache.poi.ss.util.AreaReference
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import uk.ac.brunel.cs.fyp.model.Marker
-import uk.ac.brunel.cs.fyp.model.LearningOutcomes
-import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
 
 class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
 
   def studentNumber: String = {
     "%7d".format(getIntValueFromNamedCell("Student_Number"))
   }
-
+  
+ def marker: Marker = {
+    new Marker(getStringValueFromNamedCell("Marker"))
+  }
+  
   def grade: String = {
     getStringValueFromNamedCell("Grade")
   }
@@ -34,35 +35,11 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     getStringValueFromNamedCell("Title")
   }
 
-  def marker: Marker = {
-    new Marker(getStringValueFromNamedCell("Marker"))
-  }
-
-  def learningOutcomes: LearningOutcomes = {
-    new LearningOutcomes(
-      getBooleanValueFromNamedCell("LO_Problem_Definition"),
-      getBooleanValueFromNamedCell("LO_Background"),
-      getBooleanValueFromNamedCell("LO_Practical_Application"),
-      getBooleanValueFromNamedCell("LO_Evaluation"),
-      getBooleanValueFromNamedCell("LO_Management_And_Evaluation"),
-      getBooleanValueFromNamedCell("LO_Communication"))
-  }
-
-  def programmeRequirements: ProgrammeRequirements = {
-    new ProgrammeRequirements(
-      getBooleanValueFromNamedCell("Programme_Requirements"),
-      getStringValueFromNamedCell("Programme_Requirements_Text"))
-  }
-
-  def minimumStandardsText: String = {
-    getStringValueFromNamedCell("Standards_Not_Met_Text")
-  }
-
   def justification: String = {
     getStringValueFromNamedCell("Justification_Text")
   }
 
-  private def getIntValueFromNamedCell(name: String): Int = {
+   def getIntValueFromNamedCell(name: String): Int = {
     getValueFromNamedCell(name) match {
       case Some(i: Int) => i
       case Some(d: Double) => d.toInt
@@ -79,7 +56,7 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     }
   }
 
-  private def getBooleanValueFromNamedCell(name: String): Boolean = {
+  protected def getBooleanValueFromNamedCell(name: String): Boolean = {
     getValueFromNamedCell(name) match {
       case Some(b: Boolean) => b
       case None => throw new IllegalStateException("Cannot return Boolean from a blank cell in file " + file.getName())
@@ -87,7 +64,7 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     }
   }
 
-  private def getStringValueFromNamedCell(name: String): String = {
+  protected def getStringValueFromNamedCell(name: String): String = {
     getValueFromNamedCell(name) match {
       case Some(s: String) => s
       case Some(d: Double) => d.toString

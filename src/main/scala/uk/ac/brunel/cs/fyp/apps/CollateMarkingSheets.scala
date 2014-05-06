@@ -13,123 +13,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.ss.usermodel.Cell
 import uk.ac.brunel.cs.fyp.model.assessment.AssessmentException
+import uk.ac.brunel.cs.fyp.ExcelMarkingSheet
+import uk.ac.brunel.cs.fyp.MarkingEngine
 
 object CollateMarkingSheets extends App {
 
-	// Initialise the Student Registry
-	val reg = StudentRegistry
+  val fileList = List(new File("/Users/simonkent/Desktop/Marking Sheets"))
+  val engine = new MarkingEngine(fileList)
   
-	val markingSheetReader = new MarkingSheetReader("/Users/simonkent/Desktop/Marking Sheets")
-		
-	val markSheets = markingSheetReader.processMarkingSheets
+  engine.outputToXLSX(new File("/Users/simonkent/Desktop/Results/out.xlsx"))
+  
+  //reg.addAgreements(agreements)
 
-	val assessments = markSheets.map(ms => new SingleMarkerAssessment(
-							reg.addSubmission(reg.addStudent(ms.studentNumber), ms.programme, ms.title),
-							ms.marker,
-							ms.programmeRequirements,
-							ms.learningOutcomes,
-							ms.minimumStandardsText,
-							ms.justification,
-							Some(new Grade(ms.grade))
-							)
-	)
-	
-	reg.addAssessments(assessments)
-	
-	
-	// refactor marking sheets to accommodate different types.  Then pull sheets into different collections based on type
-	// then use here to register agreement
-	
-	//reg.addAgreements(agreements)
-
-	// Here we need confirm assessments that can be automatically agreed
-	val workbook = new XSSFWorkbook()
-	
-	val sheet = workbook.createSheet("Student Marks")
-
-	var rowNumber = 0;
-	
-	reg.submissions.values.map(s => {addAssessmentToSheet(s, sheet, rowNumber); rowNumber+=1;})
-	
-	val fileOut = new FileOutputStream(new File("/Users/simonkent/Desktop/Results/out.xlsx"))
-	workbook.write(fileOut)
-	fileOut.close()
-	
-	def addAssessmentToSheet(submission: Submission, sheet: XSSFSheet, row: Int):XSSFSheet ={
-	  submission.student.number
-	  
-	  val assessment = StudentRegistry.assessment(submission) match {
-	    case Some(a: Assessment) => a
-	    case None => throw new IllegalStateException("Assessment for submission cannot be found")
-	  }
-	  
-	  // Submssion Details
-	  val rb = new RowBuilder(sheet, row)  
-	  rb.addNextCell(submission.student.number)
-	  rb.addNextCell(submission.programme)
-	  rb.addNextCell(submission.title)
-	  
-	  // Assessment Details
-	  assessment match {
-	    case sma: SingleMarkerAssessment => {
-	      addSingleMarkerAssessment(rb, sma)
-	      rb.addBlankCells(10)
-	    }
-	    case dma: DoubleMarkerAssessment => {
-	      addSingleMarkerAssessment(rb, dma.assessment1)
-	      addSingleMarkerAssessment(rb, dma.assessment2)
-	      if (dma.isFinal) {
-	        dma.grade match {
-	          case Some(g: Grade) => rb.addNextCell(g.gradePoint)
-	          case None => throw new IllegalStateException("If Assessment is final, grade must be present")
-	        }
-	      } else {
-	        rb.addNextCell("X")
-	      }
-	    }
-	  }
-	  
-	  sheet
-	}
-	
-	def addSingleMarkerAssessment(rb: RowBuilder, sma: SingleMarkerAssessment) {
-		rb.addNextCell(sma.marker.name)
-		rb.addNextCell(sma.programmeRequirements.justification);
-		rb.addNextCell(sma.programmeRequirements.met);
-	    rb.addNextCell(sma.learningOutcomes.problemDefinition)
-	    rb.addNextCell(sma.learningOutcomes.backgroundInvestigation)
-	    rb.addNextCell(sma.learningOutcomes.practicalApplication)
-	    rb.addNextCell(sma.learningOutcomes.evaluation)
-	    rb.addNextCell(sma.learningOutcomes.management)
-	    rb.addNextCell(sma.learningOutcomes.comunication)
-	    rb.addNextCell(sma.minimumStandards)
-	    rb.addNextCell(sma.justification)
-	    sma.grade match { 
-		  case Some(g: Grade) => rb.addNextCell(g.gradePoint.toDouble)
-		  case None => rb.addBlankCells(1)
-		}
-	    
-	}
-	
-	class RowBuilder(sheet: XSSFSheet, rowNumber: Int) {
-	  val row = sheet.createRow(rowNumber)
-	  var col = 0;
-	  def addNextCell(value: Any) {
-	    value match {
-	      case b: Boolean => row.createCell(col).setCellValue(b)
-	      case s: String => row.createCell(col).setCellValue(s)
-	      case d: Double => row.createCell(col).setCellValue(d)
-	      case _ => throw new IllegalArgumentException(value + " cannot be written to cell")
-	    }
-	    
-	    col+=1;
-	  }
-	  def addBlankCells(n: Int) {
-	    for (i <- (1 to n)) {
-	      row.createCell(col, Cell.CELL_TYPE_BLANK)
-	      col+=1
-	    }
-	    
-	  }
-	}
+  // Here we need confirm assessments that can be automatically agreed
+  
 }
