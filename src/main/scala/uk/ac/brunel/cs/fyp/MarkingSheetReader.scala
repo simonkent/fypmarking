@@ -16,7 +16,7 @@ class MarkingSheetReader(dirString: String) {
   }
   
   
-  def processMarkingSheets():List[ExcelMarkingSheet] ={
+  def processMarkingSheets():List[ExcelSheet] ={
     // get xlsx
     // TODO pull out the excel specific stuff in case marks are submitted in another form 
     val filter = new FilenameFilter() {
@@ -26,7 +26,7 @@ class MarkingSheetReader(dirString: String) {
     }
   
    directory.listFiles(filter).map(file => { println("Reading file " + file) ; 
-   											 new ExcelMarkingSheet(file) }).toList
+   											 ExcelSheet.parse(file) }).toList
    
   }
   
