@@ -12,6 +12,7 @@ import java.io.FileOutputStream
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.ss.usermodel.Cell
+import uk.ac.brunel.cs.fyp.model.assessment.AssessmentException
 
 object CollateMarkingSheets extends App {
 
@@ -33,8 +34,15 @@ object CollateMarkingSheets extends App {
 							)
 	)
 	
-	reg.addAssessments(assessments);
+	reg.addAssessments(assessments)
+	
+	
+	// refactor marking sheets to accommodate different types.  Then pull sheets into different collections based on type
+	// then use here to register agreement
+	
+	//reg.addAgreements(agreements)
 
+	// Here we need confirm assessments that can be automatically agreed
 	val workbook = new XSSFWorkbook()
 	
 	val sheet = workbook.createSheet("Student Marks")
