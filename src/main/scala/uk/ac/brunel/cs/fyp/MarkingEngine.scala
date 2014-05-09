@@ -1,25 +1,27 @@
 package uk.ac.brunel.cs.fyp
 
-import java.io.File
-import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.config.Config
+import uk.ac.brunel.cs.fyp.model.assessment._
 import uk.ac.brunel.cs.fyp.model.Grade
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.FileOutputStream
-import uk.ac.brunel.cs.fyp.model.assessment.DoubleMarkerAssessment
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.ss.usermodel.Cell
-import uk.ac.brunel.cs.fyp.model.assessment.Assessment
 import uk.ac.brunel.cs.fyp.model.Submission
+import java.io.{FileInputStream, FileOutputStream, File}
+import scala.Some
+import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
 
-class MarkingEngine(val files: List[File]) {
-  val readers = files.map(file => new MarkingSheetReader(file))
-  
+class MarkingEngine {
+
+  val readers = List(new File(Config.markingsheets)).map(file => new MarkingSheetReader(file))
+
   // Initialise the Student Registry
   val reg = StudentRegistry
   
   val markingSheets = readers.map(_.processMarkingSheets).flatten
 
-  val assessments = markingSheets.map(m => m match {
+  val assessments: List[SingleMarkerAssessment] = markingSheets.map(m => m match {
     case ms: ExcelMarkingSheet => new SingleMarkerAssessment(
       reg.addSubmission(reg.addStudent(ms.studentNumber), ms.programme, ms.title),
       ms.marker,
@@ -32,7 +34,8 @@ class MarkingEngine(val files: List[File]) {
   
   reg.addAssessments(assessments)
 
-  def outputToXLSX(outFile: File) {
+  def outputToXLSX {
+    val outFile: File = new File(Config.outputfile)
     val workbook = new XSSFWorkbook()
 
     val sheet = workbook.createSheet("Student Marks")
@@ -71,7 +74,7 @@ class MarkingEngine(val files: List[File]) {
         addSingleMarkerAssessment(rb, dma.assessment2)
         if (dma.isFinal) {
           dma.grade match {
-            case Some(g: Grade) => rb.addNextCell(g.gradePoint)
+            case Some(g: Grade) => rb.addNextCell(g.gradePoint.toDouble)
             case None => throw new IllegalStateException("If Assessment is final, grade must be present")
           }
         } else {
@@ -124,4 +127,58 @@ class MarkingEngine(val files: List[File]) {
     }
   }
 
+  def outputAgreementSheet(assessment: Assessment) {
+    val templateFile = new File(Config.agreementTemplate)
+    val destinationDirectory = new File(Config.agreementDirectory)
+
+    if (!destinationDirectory.exists()) {
+      println(destinationDirectory + " does not exist")
+      System.exit(-1)
+    }
+
+    val agreement = new ExcelAgreementSheet(templateFile)
+
+    assessment match {
+      case dma: UnconfirmedDoubleMarkerAssessment => {
+        agreement.studentNumber = dma.submission.student.number.trim.toInt
+        agreement.firstGrade = dma.assessment1.grade match { case Some(g: Grade) => g.grade }
+        agreement.secondGrade = dma.assessment2.grade match { case Some(g: Grade) => g.grade }
+        agreement.programme = dma.submission.programme
+        agreement.title = dma.submission.title
+        agreement.marker = dma.assessment1.marker.name;
+        agreement.secondMarker = dma.assessment2.marker.name;
+
+        if (dma.requiresAgreement) {
+          agreement.grade = "";
+          agreement.justification = Config.requiresAgreementText
+        } else if (dma.eligibleForAgreement) {
+          agreement.grade = (new AutomaticAgreedDoubleMarkerAssessment(dma).grade) match { case Some(g: Grade) => g.grade };
+          agreement.justification = Config.eligibleForAgreementText
+        }
+      }
+    }
+
+
+    val outFile = new File(destinationDirectory, "Grade Agreement" + assessment.submission.student.number + ".xlsx")
+    val fileOutStream = new FileOutputStream(outFile)
+
+    agreement.writeToFile(fileOutStream)
+
+    fileOutStream.close()
+  }
+
+  def generateAgreementSheets {
+	  StudentRegistry.assessments.filter(_._2.requiresAgreement).map(a => outputAgreementSheet(a._2))
+  }
+
+  def autoAgree {
+    StudentRegistry.addAssessments(
+      StudentRegistry.assessments.
+        filter(a => a._2.gradeDifference==0 || (a._2.eligibleForAgreement && !a._2.requiresAgreement)).
+        filter(a => a._2 match { case dma: UnconfirmedDoubleMarkerAssessment => true; case _ => false}).
+      map(b => b._2 match {
+            case dma: UnconfirmedDoubleMarkerAssessment => new AutomaticAgreedDoubleMarkerAssessment(dma)
+          }).toSeq
+    )
+  }
 }

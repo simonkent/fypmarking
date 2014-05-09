@@ -9,9 +9,15 @@ class ModeratedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMa
 
   def justification = moderation.justification
 
-  override def isFinal: Boolean = true
-
   override def assessment2: SingleMarkerAssessment = unconfirmedAssessment.assessment1
 
   override def assessment1: SingleMarkerAssessment = unconfirmedAssessment.assessment2
+
+  override def isFinal: Boolean = true
+
+  override def requiresModeration: Boolean = false
+
+  override def requiresAgreement: Boolean = false
+
+  override def eligibleForAgreement: Boolean = false
 }

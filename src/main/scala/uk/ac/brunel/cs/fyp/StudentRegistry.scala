@@ -1,17 +1,15 @@
 package uk.ac.brunel.cs.fyp
 
 import scala.collection.mutable.Map
-import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
-import uk.ac.brunel.cs.fyp.model.assessment.DoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.model.assessment.Assessment
-import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
+import uk.ac.brunel.cs.fyp.model.assessment._
 import uk.ac.brunel.cs.fyp.model.Student
 import uk.ac.brunel.cs.fyp.model.Submission
-import uk.ac.brunel.cs.fyp.model.assessment.AgreedDoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.model.assessment.Agreement
+import uk.ac.brunel.cs.fyp.ConcreteStudent
+import scala.Some
+import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
+import uk.ac.brunel.cs.fyp.ConcreteSubmission
 import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
-import uk.ac.brunel.cs.fyp.model.assessment.AssessmentException
+import uk.ac.brunel.cs.fyp.model.assessment.Agreement
 
 case class ConcreteStudent(val number: String) extends Student {
   
@@ -62,7 +60,7 @@ object StudentRegistry {
 	  }
 	}
 	
-	def addAssessments(assessments: Seq[SingleMarkerAssessment]) {
+	def addAssessments(assessments: Seq[Assessment]) {
 	  assessments.map(assessment => {
 	    try {
 	    	recordAssessment(assessment)
@@ -81,7 +79,7 @@ object StudentRegistry {
 	  }
 	}
 	
-	private def recordAssessment(assessment: SingleMarkerAssessment) {
+	private def recordAssessment(assessment: Assessment) {
 	  val submission = getSubmission(assessment.submission.student) match {
 	    case Some(s: Submission) => s
 	    case None => addStudent(assessment.submission.student.number); addSubmission(assessment.submission.student, assessment.submission.programme, assessment.submission.title)
@@ -92,13 +90,24 @@ object StudentRegistry {
 	      }
 	  
 	  if (assessments.contains(submission)) {
-	    assessments = assessments.map(ass =>
+	    assessments = assessments.map(existing =>
 	      	
-	    	if (ass._1!=submission) {
-	    	  ass
+	    	if (existing._1!=submission) {
+	    	  existing
 	    	} else {
-	    	  ass._2 match {
-	    	  	case sma: SingleMarkerAssessment => submission->new UnconfirmedDoubleMarkerAssessment(sma, assessment)
+	    	  existing._2 match {
+	    	  	case existingSma: SingleMarkerAssessment => {
+              assessment match {
+                case newSma: SingleMarkerAssessment => submission->new UnconfirmedDoubleMarkerAssessment(newSma, existingSma)
+                case _ => throw new IllegalStateException("Incompatible Assessment being added for " + submission.student)
+              }
+            }
+            // Replace an existing DMA with a new one
+            case existingDma: DoubleMarkerAssessment => {
+              assessment match {
+                case newDma: DoubleMarkerAssessment => submission->newDma
+              }
+            }
 	    	  	case _ => throw new IllegalStateException("Two assessments already exist for student " + submission.student)
 	    	  }
 	    	}

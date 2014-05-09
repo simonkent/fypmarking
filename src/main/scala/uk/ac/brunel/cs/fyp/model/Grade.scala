@@ -10,7 +10,10 @@ case class Grade(gradePoint: Int) {
 	}
 	
 	def withinSameGradeBoundary(other: Grade):Boolean ={
-	  this.grade.charAt(0)==other.grade.charAt(0)
+    // Both A*
+    (this.grade=="A*" && other.grade=="A*") ||
+    // or neither is A*, and have same first letter
+    (this.grade!="A*" && other.grade!="A*") && this.grade.charAt(0)==other.grade.charAt(0)
 	}
 
 	// TODO can I achieve this with Ordering[Grade]

@@ -1,7 +1,6 @@
 package uk.ac.brunel.cs.fyp.model.assessment
 
 import uk.ac.brunel.cs.fyp.model.Grade
-import uk.ac.brunel.cs.fyp.model.Submission
 
 case class UnconfirmedDoubleMarkerAssessment(
 		assessment1: SingleMarkerAssessment,
@@ -10,4 +9,12 @@ case class UnconfirmedDoubleMarkerAssessment(
   def grade: Option[Grade] = None
     
   def isFinal = false
+
+  override def requiresModeration: Boolean = !assessmentsWithinLimits
+
+  override def requiresAgreement: Boolean = assessmentsWithinLimits && !assessmentsWithinSameGradeBoundary
+
+  override def eligibleForAgreement: Boolean = assessmentsWithinSameGradeBoundary && g1!=g2
+
+  // add eligibleForAutomaticAgreement predicate
 }

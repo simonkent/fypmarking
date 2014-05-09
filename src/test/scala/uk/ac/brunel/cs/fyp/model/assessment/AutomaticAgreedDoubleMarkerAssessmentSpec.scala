@@ -31,10 +31,14 @@ class AutomaticAgreedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactor
     satisfiedLearningOutcomes, "Minimum Standards", "Justification", Some(aMinusGrade))
   val sma4 = new SingleMarkerAssessment(mockSubmission, new Marker("Marker 4"), new ProgrammeRequirements(true, "Test"),
     satisfiedLearningOutcomes, "Minimum Standards", "Justification", Some(bPlusGrade))
+  val sma5 = new SingleMarkerAssessment(mockSubmission, new Marker("Marker 5"), new ProgrammeRequirements(true, "Test"),
+    satisfiedLearningOutcomes, "Minimum Standards", "Justification", Some(aStarGrade))
+
 
   val udma1 = new UnconfirmedDoubleMarkerAssessment(sma1a, sma1b);
   val udma2 = new UnconfirmedDoubleMarkerAssessment(sma1a, sma2);
   val udma3 = new UnconfirmedDoubleMarkerAssessment(sma1a, sma3);
+  val udma4 = new UnconfirmedDoubleMarkerAssessment(sma1a, sma5);
 
   def equalGrade = new AutomaticAgreedDoubleMarkerAssessment(udma1)
   def oneGPDiff = new AutomaticAgreedDoubleMarkerAssessment(udma2)
@@ -103,9 +107,18 @@ class AutomaticAgreedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactor
   "If markers grades are >2 gradepoints apart an AgreedDoubleMarkerAssessment" should "throw an AssessmentException" in {
     try {
       val dma = new UnconfirmedDoubleMarkerAssessment(sma1a, sma4)
+      assert(false)
     } catch {
       case e: AssessmentException => assert(true);
-      assert(true)
+    }
+  }
+
+  "An A* grade" should "not be automatically agreed with an A+ or A grade" in {
+    try {
+      val aadma = new AutomaticAgreedDoubleMarkerAssessment(udma4);
+      assert(false)
+    } catch {
+      case e: AssessmentException => assert(true);
     }
   }
 

@@ -1,13 +1,15 @@
 package uk.ac.brunel.cs.fyp
 
-import java.io.File
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import uk.ac.brunel.cs.fyp.model.LearningOutcomes
-import uk.ac.brunel.cs.fyp.model.Marker
 import uk.ac.brunel.cs.fyp.model.ProgrammeRequirements
+import java.io.{FileInputStream, File}
 
-class ExcelMarkingSheet(file: File, workbook: XSSFWorkbook) extends ExcelSheet(file, workbook) {
-	
+class ExcelMarkingSheet(file: File) extends ExcelSheet(file, new XSSFWorkbook(new FileInputStream(file))) {
+  def this(parser: ExcelSheetParser) {
+    this(parser.file)
+  }
+
   def learningOutcomes: LearningOutcomes = {
     new LearningOutcomes(
       getBooleanValueFromNamedCell("LO_Problem_Definition"),

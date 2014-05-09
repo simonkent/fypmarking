@@ -1,8 +1,8 @@
 package uk.ac.brunel.cs.fyp
 
-import java.io.File
 import java.io.FilenameFilter
-import scala.Array.canBuildFrom
+import java.io.File
+
 
 class MarkingSheetReader(val directory: File) {
   def this(dirString: String) {
@@ -19,8 +19,6 @@ class MarkingSheetReader(val directory: File) {
   
   
   def processMarkingSheets():List[ExcelSheet] ={
-    // get xlsx
-    // TODO pull out the excel specific stuff in case marks are submitted in another form 
     val filter = new FilenameFilter() {
         override def accept(dir: File, fileName: String): Boolean={
             fileName.endsWith(".xlsx") && !fileName.startsWith("~")

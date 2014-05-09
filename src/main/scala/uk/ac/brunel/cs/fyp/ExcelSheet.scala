@@ -6,37 +6,68 @@
  */
 package uk.ac.brunel.cs.fyp
 
-import java.io.File
-import java.io.FileInputStream
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.util.AreaReference
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.apache.poi.xssf.usermodel.{XSSFCell, XSSFWorkbook}
 import uk.ac.brunel.cs.fyp.model.Marker
+import java.io.{FileOutputStream, FileInputStream, File}
+import com.sun.org.apache.xpath.internal.objects.XStringForChars
 
 class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
+  def this(file: File) {
+    this(file, new XSSFWorkbook(new FileInputStream(file)))
+  }
+
+  def this(parser: ExcelSheetParser) {
+    this(parser.file, parser.workbook)
+  }
 
   def studentNumber: String = {
     "%7d".format(getIntValueFromNamedCell("Student_Number"))
   }
+
+  def studentNumber_=(number: Int) {
+    setIntInNamedCell(number, "Student_Number")
+  }
   
  def marker: Marker = {
     new Marker(getStringValueFromNamedCell("Marker"))
+  }
+
+  def marker_= (marker: String) {
+    setStringInNamedCell(marker, "Marker")
   }
   
   def grade: String = {
     getStringValueFromNamedCell("Grade")
   }
 
+  def grade_=(grade: String) {
+    setStringInNamedCell(grade, "Grade")
+  }
+
   def programme: String = {
     getStringValueFromNamedCell("Programme")
+  }
+
+  def programme_=(programme: String) {
+    setStringInNamedCell(programme, "Programme")
   }
 
   def title: String = {
     getStringValueFromNamedCell("Title")
   }
 
+  def title_=(title: String) {
+    setStringInNamedCell(title, "Title")
+  }
+
   def justification: String = {
     getStringValueFromNamedCell("Justification_Text")
+  }
+
+  def justification_=(text: String) {
+    setStringInNamedCell(text, "Justification_Text")
   }
 
    def getIntValueFromNamedCell(name: String): Int = {
@@ -74,7 +105,7 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     }
   }
 
-  private def getValueFromNamedCell(name: String): Option[Any] = {
+  private def getNamedXSSFCell(name: String):XSSFCell= {
     val namedCell = workbook.getNameAt(workbook.getNameIndex(name))
 
     val reference = new AreaReference(namedCell.getRefersToFormula())
@@ -89,6 +120,12 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     val row = sheet.getRow(cellRef.getRow);
     val cell = row.getCell(cellRef.getCol);
 
+    cell
+  }
+  private def getValueFromNamedCell(name: String): Option[Any] = {
+
+    val cell: XSSFCell = getNamedXSSFCell(name)
+
     cell.getCellType match {
       case Cell.CELL_TYPE_NUMERIC => Some(cell.getNumericCellValue())
       case Cell.CELL_TYPE_STRING => Some(cell.getStringCellValue())
@@ -98,24 +135,42 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
     }
   }
 
+  protected def setStringInNamedCell(value: String, name: String) {
+    val cell: XSSFCell = getNamedXSSFCell(name)
+
+    cell.setCellValue(value)
+  }
+
+  protected def setIntInNamedCell(i: Int, name: String) {
+    val cell: XSSFCell = getNamedXSSFCell(name)
+
+    cell.setCellValue(i.toDouble)
+
+  }
+
+
+  def writeToFile(stream: FileOutputStream) = {
+    workbook.write(stream)
+  }
+
 }
 
-private class ExcelSheetParser(file: File) {
+private class ExcelSheetParser(val file: File) {
   val workbook = new XSSFWorkbook(new FileInputStream(file))
 
-  val docType: String = getDocType
+  val docType: String = getDocType(workbook)
 
   def execute: ExcelSheet = {
     if (docType == "MA") {
-      new ExcelAgreementSheet(file, workbook)
+      new ExcelAgreementSheet(this)
     } else if (docType == "MS"){
-      new ExcelMarkingSheet(file, workbook)
+      new ExcelMarkingSheet(this)
     } else {
       throw new IllegalStateException("Somthing bad has happened")
     }
   }
 
-  private def getDocType: String = {
+  private def getDocType(workbook: XSSFWorkbook): String = {
     val index = workbook.getNameIndex("DocType")
     
     if (index<0) {
@@ -137,12 +192,8 @@ private class ExcelSheetParser(file: File) {
     val cell = row.getCell(cellRef.getCol);
 
     cell.getStringCellValue()
-
     }
-
-   
   }
-
 }
 
 object ExcelSheet {

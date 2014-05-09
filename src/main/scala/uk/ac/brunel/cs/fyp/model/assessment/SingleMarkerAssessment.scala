@@ -19,4 +19,14 @@ case class SingleMarkerAssessment (
     case None => throw new AssessmentException("It is not valid to create a SingleMarkerAssessment without a grade")
     case _ => // we're happy
   }
+
+  override def isDoubleMarked: Boolean = false
+
+  override def requiresModeration: Boolean = false
+
+  override def requiresAgreement: Boolean = false
+
+  override def eligibleForAgreement: Boolean = false
+
+  override def gradeDifference: Int = 0
 }

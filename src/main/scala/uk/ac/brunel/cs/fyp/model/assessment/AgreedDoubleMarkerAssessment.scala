@@ -1,11 +1,8 @@
 package uk.ac.brunel.cs.fyp.model.assessment
 
-import uk.ac.brunel.cs.fyp.model.Submission
 import uk.ac.brunel.cs.fyp.model.Grade
 
 class AgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMarkerAssessment, agreement: Agreement) extends DoubleMarkerAssessment {
-	val g1 = checkedGrade(assessment1.grade)
-	val g2 = checkedGrade(assessment2.grade)
 	val agreedGrade = checkedGrade(agreement.grade)
   
 	if (!assessmentsWithinLimits) {
@@ -15,17 +12,12 @@ class AgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMarke
 	if (!agreedGradeWithinBoundary) {
 	  throw new IllegalArgumentException("Cannot create an Agreed Double Marker Assessment unless proposed grades are within boundaries")
 	}
-	
-	private def assessmentsWithinLimits: Boolean= { 
-		  (g1 withinSameGradeBoundary g2) &&
-		  (g1 diff g2)<=2 
-    }
-	
-	private def agreedGradeWithinBoundary: Boolean= {
-		  agreedGrade <= Grade.max(g1, g2) &&
-		  agreedGrade >= Grade.min(g1, g2)
- 	}
-	
+
+  protected def agreedGradeWithinBoundary: Boolean = {
+    agreedGrade <= Grade.max(g1, g2) &&
+    agreedGrade >= Grade.min(g1, g2)
+  }
+
 	val gp1 = assessment1.grade match {
 	  case Some(gp: Grade) => gp.gradePoint
 	  case None => throw new IllegalArgumentException("Something has gone wrong!")
@@ -46,4 +38,10 @@ class AgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMarke
 	def grade: Option[Grade] = Some(agreedGrade);
 	
 	def isFinal = true
+
+  override def requiresModeration: Boolean = !agreedGradeWithinBoundary
+
+  override def requiresAgreement: Boolean = false
+
+  override def eligibleForAgreement: Boolean = false
 }

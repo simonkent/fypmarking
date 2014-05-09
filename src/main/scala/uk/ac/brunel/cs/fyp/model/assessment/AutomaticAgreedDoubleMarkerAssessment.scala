@@ -15,7 +15,11 @@ class AutomaticAgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDo
     case Some(g: Grade) => g;
     case _ => throw new AssessmentException("Invalid grade in assessment 2")
   }
-  // add some checks here to ensure it is in range
+
+  if (!assessmentsWithinSameGradeBoundary) {
+    throw new AssessmentException("Cannot automatically agree a grade if grades are not in same grade boundaries")
+  }
+
   override def isFinal: Boolean = true
 
   override def grade: Option[Grade] ={
@@ -45,4 +49,10 @@ class AutomaticAgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDo
       case _ => throw new IllegalStateException("Should never be >2 gradepoints between markers")
     }
   }
+
+  override def requiresAgreement: Boolean = false
+
+  override def requiresModeration: Boolean = false
+
+  override def eligibleForAgreement: Boolean = false
 }
