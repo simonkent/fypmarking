@@ -9,7 +9,7 @@ object GenerateAgreementSheets extends App {
   engine.generateAgreementSheets 
   
   engine.outputToXLSX
-  
+
   //reg.addAgreements(agreements)
 
   // Here we need confirm assessments that can be automatically agreed

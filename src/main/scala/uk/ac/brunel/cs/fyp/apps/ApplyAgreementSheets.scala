@@ -5,9 +5,11 @@ import uk.ac.brunel.cs.fyp.MarkingEngine
 object ApplyAgreementSheets extends App {
 
   val engine = new MarkingEngine
-  
+
   engine.autoAgree
-  
+
+  engine.generateModerationSheets
+
   engine.outputToXLSX
   
   //reg.addAgreements(agreements)

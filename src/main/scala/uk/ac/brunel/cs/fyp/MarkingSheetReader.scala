@@ -26,11 +26,11 @@ class MarkingSheetReader(val directory: File) {
     }
   
    directory.listFiles(filter).map(file => { println("Reading file " + file) ; 
-   											 ExcelSheet.parse(file) }).
+   											 ExcelSheet.parse(file) })./*
    							   filter(_ match {
    							     case e: ExcelMarkingSheet => true
    							     case _ => false
-   							     }).
+   							     }).*/
    							   toList
    
   }

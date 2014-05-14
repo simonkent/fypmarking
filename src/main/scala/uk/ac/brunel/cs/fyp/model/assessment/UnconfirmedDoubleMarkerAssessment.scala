@@ -15,6 +15,4 @@ case class UnconfirmedDoubleMarkerAssessment(
   override def requiresAgreement: Boolean = assessmentsWithinLimits && !assessmentsWithinSameGradeBoundary
 
   override def eligibleForAgreement: Boolean = assessmentsWithinSameGradeBoundary && g1!=g2
-
-  // add eligibleForAutomaticAgreement predicate
 }

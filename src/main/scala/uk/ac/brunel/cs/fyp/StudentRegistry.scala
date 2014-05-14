@@ -2,8 +2,7 @@ package uk.ac.brunel.cs.fyp
 
 import scala.collection.mutable.Map
 import uk.ac.brunel.cs.fyp.model.assessment._
-import uk.ac.brunel.cs.fyp.model.Student
-import uk.ac.brunel.cs.fyp.model.Submission
+import uk.ac.brunel.cs.fyp.model.{Grade, Student, Submission}
 import uk.ac.brunel.cs.fyp.ConcreteStudent
 import scala.Some
 import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
@@ -131,7 +130,11 @@ object StudentRegistry {
 		    case _ => throw new IllegalStateException("Unconfirmed Double Marker Assessment does not exist for submission: " + submission);
 		}
 		
-		val agreedAssessment = new AgreedDoubleMarkerAssessment(existingAssessment, agreement)
+		val agreedAssessment =
+      agreement.grade match {
+        case Some(g: Grade) => new AgreedDoubleMarkerAssessment(existingAssessment, agreement)
+        case None => new DisagreedDoubleMarkerAssessment(existingAssessment, agreement)
+      }
 		
 		assessments += submission -> agreedAssessment
 	}

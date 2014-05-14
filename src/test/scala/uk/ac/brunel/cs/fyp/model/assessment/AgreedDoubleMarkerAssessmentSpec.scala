@@ -34,17 +34,17 @@ class AgreedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactory {
     
   "An AgreedDoubleMarkerAssessment" should "be constructable if markers grades are <3 gradepoints apart" in {
     try {
-    	val dma = new AgreedDoubleMarkerAssessment(udma1, new Agreement(Some(aPlusGrade), mockSubmission, "justification"))
+    	val dma = new AgreedDoubleMarkerAssessment(udma1, new Agreement(mockSubmission, Some(aPlusGrade), "justification"))
     } catch {
       case _: AssessmentException => assert(false)
     }
     try {
-    	val dma2 = new AgreedDoubleMarkerAssessment(udma1, new Agreement(Some(aGrade), mockSubmission, "justification"))
+    	val dma2 = new AgreedDoubleMarkerAssessment(udma1, new Agreement(mockSubmission, Some(aGrade), "justification"))
     } catch {
       case _: AssessmentException => assert(false)
     }
     try {
-    	val dma3 = new AgreedDoubleMarkerAssessment(udma1, new Agreement(Some(bGrade), mockSubmission, "justification"))
+    	val dma3 = new AgreedDoubleMarkerAssessment(udma1, new Agreement(mockSubmission, Some(bGrade), "justification"))
     } catch {
       case _: AssessmentException => assert(false)
     }
@@ -52,7 +52,7 @@ class AgreedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactory {
   }
   
   it should "be final" in {
-    val dma = new AgreedDoubleMarkerAssessment(udma1, new Agreement(Some(aGrade), mockSubmission, "justification"))
+    val dma = new AgreedDoubleMarkerAssessment(udma1, new Agreement(mockSubmission, Some(aGrade), "justification"))
     assert(dma.isFinal)
   }
 

@@ -14,25 +14,44 @@ import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
 
 class MarkingEngine {
 
-  val readers = List(new File(Config.markingsheets)).map(file => new MarkingSheetReader(file))
+  val readers = List(new File(Config.markingsheets), new File(Config.agreementInDirectory)).
+                  map(file => new MarkingSheetReader(file))
 
   // Initialise the Student Registry
   val reg = StudentRegistry
   
   val markingSheets = readers.map(_.processMarkingSheets).flatten
 
-  val assessments: List[SingleMarkerAssessment] = markingSheets.map(m => m match {
-    case ms: ExcelMarkingSheet => new SingleMarkerAssessment(
-      reg.addSubmission(reg.addStudent(ms.studentNumber), ms.programme, ms.title),
-      ms.marker,
-      ms.programmeRequirements,
-      ms.learningOutcomes,
-      ms.minimumStandardsText,
-      ms.justification,
-      Some(new Grade(ms.grade)))
+  val assessments: List[SingleMarkerAssessment] = markingSheets.
+      filter(_ match { case m: ExcelMarkingSheet => true case _ => false}).
+      map(m => m match {
+        case ms: ExcelMarkingSheet => new SingleMarkerAssessment(
+          reg.addSubmission(reg.addStudent(ms.studentNumber), ms.programme, ms.title),
+          ms.marker,
+          ms.programmeRequirements,
+          ms.learningOutcomes,
+          ms.minimumStandardsText,
+          ms.justification,
+          Some(new Grade(ms.grade)))
   })
   
   reg.addAssessments(assessments)
+
+  val agreements: List[Agreement] =  markingSheets.
+    filter(_ match { case m: ExcelAgreementSheet => true case _ => false}).
+    map(m => m match {
+      case as: ExcelAgreementSheet => new Agreement(
+        reg.getSubmission(reg.students(as.studentNumber)) match {
+          case Some(submission: Submission) => submission
+          case None => throw new IllegalStateException("No submission found for student " + as.studentNumber)
+        },
+        if(as.agreed) {
+          Some(new Grade(as.grade))
+        } else None,
+        as.justification)
+  })
+
+  reg.addAgreements(agreements)
 
   def outputToXLSX {
     val outFile: File = new File(Config.outputfile)
@@ -129,7 +148,7 @@ class MarkingEngine {
 
   def outputAgreementSheet(assessment: Assessment) {
     val templateFile = new File(Config.agreementTemplate)
-    val destinationDirectory = new File(Config.agreementDirectory)
+    val destinationDirectory = new File(Config.agreementOutDirectory)
 
     if (!destinationDirectory.exists()) {
       println(destinationDirectory + " does not exist")
@@ -158,6 +177,9 @@ class MarkingEngine {
       }
     }
 
+    def recordAgreementSheets= {
+
+    }
 
     val outFile = new File(destinationDirectory, "Grade Agreement" + assessment.submission.student.number + ".xlsx")
     val fileOutStream = new FileOutputStream(outFile)
@@ -167,8 +189,56 @@ class MarkingEngine {
     fileOutStream.close()
   }
 
+  def outputModerationSheet(assessment: Assessment) {
+    val templateFile = new File(Config.moderationTemplate)
+    val destinationDirectory = new File(Config.moderationOutDirectory)
+
+    if (!destinationDirectory.exists()) {
+      println(destinationDirectory + " does not exist")
+      System.exit(-1)
+    }
+
+    val moderationSheet = new ExcelModerationSheet(templateFile)
+
+
+    assessment match {
+      case dma: DoubleMarkerAssessment => {
+        moderationSheet.studentNumber = dma.submission.student.number.trim.toInt
+        moderationSheet.firstGrade = dma.assessment1.grade match { case Some(g: Grade) => g.grade }
+        moderationSheet.secondGrade = dma.assessment2.grade match { case Some(g: Grade) => g.grade }
+        moderationSheet.programme = dma.submission.programme
+        moderationSheet.title = dma.submission.title
+        moderationSheet.marker = dma.assessment1.marker.name;
+        moderationSheet.secondMarker = dma.assessment2.marker.name;
+
+        moderationSheet.grade = "";
+
+        dma match {
+          case unconfirmed: UnconfirmedDoubleMarkerAssessment => {
+            moderationSheet.justification = Config.requiresModerationBecauseOfGradeDifference
+          }
+          case disagreed: DisagreedDoubleMarkerAssessment => {
+            moderationSheet.justification = Config.requiresModerationBecauseOfMarkerDisagreement
+          }
+        }
+      }
+    }
+
+
+    val outFile = new File(destinationDirectory, "Grade Moderation" + assessment.submission.student.number + ".xlsx")
+    val fileOutStream = new FileOutputStream(outFile)
+
+    moderationSheet.writeToFile(fileOutStream)
+
+    fileOutStream.close()
+  }
+
   def generateAgreementSheets {
 	  StudentRegistry.assessments.filter(_._2.requiresAgreement).map(a => outputAgreementSheet(a._2))
+  }
+
+  def generateModerationSheets {
+    StudentRegistry.assessments.filter(_._2.requiresModeration).map(a => outputModerationSheet(a._2))
   }
 
   def autoAgree {

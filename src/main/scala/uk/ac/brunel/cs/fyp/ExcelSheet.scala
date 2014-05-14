@@ -163,6 +163,8 @@ private class ExcelSheetParser(val file: File) {
   def execute: ExcelSheet = {
     if (docType == "MA") {
       new ExcelAgreementSheet(this)
+    } else if (docType == "MM") {
+      new ExcelModerationSheet(this)
     } else if (docType == "MS"){
       new ExcelMarkingSheet(this)
     } else {
