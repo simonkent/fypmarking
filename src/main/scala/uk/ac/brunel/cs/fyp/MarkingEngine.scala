@@ -14,12 +14,13 @@ import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
 
 class MarkingEngine {
 
-  val readers = List(new File(Config.markingsheets), new File(Config.agreementInDirectory)).
+  val readers = List(new File(Config.markingsheets), new File(Config.agreementInDirectory), new File(Config.moderationInDirectory)).
                   map(file => new MarkingSheetReader(file))
 
   // Initialise the Student Registry
   val reg = StudentRegistry
-  
+
+  // Process the raw marking sheets
   val markingSheets = readers.map(_.processMarkingSheets).flatten
 
   val assessments: List[SingleMarkerAssessment] = markingSheets.
@@ -37,6 +38,7 @@ class MarkingEngine {
   
   reg.addAssessments(assessments)
 
+  // Process all the marker agreements
   val agreements: List[Agreement] =  markingSheets.
     filter(_ match { case m: ExcelAgreementSheet => true case _ => false}).
     map(m => m match {
@@ -52,6 +54,21 @@ class MarkingEngine {
   })
 
   reg.addAgreements(agreements)
+
+  //Process all the moderations
+  val moderations: List[Moderation] =  markingSheets.
+    filter(_ match { case m: ExcelModerationSheet => true case _ => false}).
+    map(m => m match {
+    case ms: ExcelModerationSheet => new Moderation(
+      reg.getSubmission(reg.students(ms.studentNumber)) match {
+        case Some(submission: Submission) => submission
+        case None => throw new IllegalStateException("No submission found for student " + ms.studentNumber)
+      },
+      Some(new Grade(ms.grade)),
+      ms.justification)
+  })
+
+  reg.addModerations(moderations)
 
   def outputToXLSX {
     val outFile: File = new File(Config.outputfile)

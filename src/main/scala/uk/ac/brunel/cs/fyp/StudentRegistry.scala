@@ -23,7 +23,8 @@ case class ConcreteSubmission(val student: Student, val programme: String, val t
 }
 
 object StudentRegistry {
-	var students = Map[String, Student]()
+
+  var students = Map[String, Student]()
 	var submissions = Map[Student, Submission]()
 	var assessments = Map[Submission, Assessment]()
 	
@@ -138,4 +139,32 @@ object StudentRegistry {
 		
 		assessments += submission -> agreedAssessment
 	}
-}  
+
+  def addModerations(moderations: Seq[Moderation]) = {
+    moderations.map(moderation => recordModeration(moderation))
+  }
+
+  private def recordModeration(moderation: Moderation) {
+    val submission = getSubmission(moderation.submission.student) match {
+      case Some(s: Submission) => s;
+      case None => throw new IllegalStateException("No submission for moderation: " + moderation);
+    }
+
+    val existingAssessment = assessment(submission) match {
+      case Some(udma: UnconfirmedDoubleMarkerAssessment) => {
+        if (udma.requiresModeration) udma else throw new IllegalStateException("Unconfirmed Double Marker Assessment does not require moderation for submission: " + submission)
+      }
+      case Some(ddma: DisagreedDoubleMarkerAssessment) => ddma
+      case _ => throw new IllegalStateException("Assessment requiring moderation cannot be found submission: " + submission);
+    }
+
+    val moderatedAssessment =
+      moderation.grade match {
+        case Some(g: Grade) => new ModeratedDoubleMarkerAssessment(existingAssessment, moderation)
+        case None => throw new IllegalStateException("Moderation does not contain a valid grade for submission: " + submission);
+      }
+
+    assessments += submission -> moderatedAssessment
+  }
+}
+
