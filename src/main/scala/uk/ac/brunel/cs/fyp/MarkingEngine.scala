@@ -21,7 +21,7 @@ class MarkingEngine {
   val reg = StudentRegistry
 
   // Process the raw marking sheets
-  val markingSheets = readers.map(_.processMarkingSheets).flatten
+  val markingSheets = readers.par.map(_.processMarkingSheets).flatten
 
   val assessments: List[SingleMarkerAssessment] = markingSheets.
       filter(_ match { case m: ExcelMarkingSheet => true case _ => false}).
@@ -34,7 +34,7 @@ class MarkingEngine {
           ms.minimumStandardsText,
           ms.justification,
           Some(new Grade(ms.grade)))
-  })
+  }).toList
   
   reg.addAssessments(assessments)
 
@@ -51,7 +51,7 @@ class MarkingEngine {
           Some(new Grade(as.grade))
         } else None,
         as.justification)
-  })
+  }).toList
 
   reg.addAgreements(agreements)
 
@@ -66,7 +66,7 @@ class MarkingEngine {
       },
       Some(new Grade(ms.grade)),
       ms.justification)
-  })
+  }).toList
 
   reg.addModerations(moderations)
 
@@ -118,6 +118,15 @@ class MarkingEngine {
         }
       }
     }
+
+    // Means by which agreement was reached
+    rb.addNextCell(assessment match {
+      case sma: SingleMarkerAssessment => "Missing Mark"
+      case dma: DoubleMarkerAssessment => {
+        dma.status
+      }
+    })
+
 
     sheet
   }

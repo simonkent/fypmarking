@@ -55,4 +55,6 @@ class AutomaticAgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDo
   override def requiresModeration: Boolean = false
 
   override def eligibleForAgreement: Boolean = false
+
+  override def status: String = "Automatically Agreed: " + justification
 }

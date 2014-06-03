@@ -44,4 +44,6 @@ class AgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMarke
   override def requiresAgreement: Boolean = false
 
   override def eligibleForAgreement: Boolean = false
+
+  override def status: String = "Agreed: " + agreement.justification
 }

@@ -22,4 +22,6 @@ class ModeratedDoubleMarkerAssessment(dma: DoubleMarkerAssessment, moderation: M
   override def requiresAgreement: Boolean = false
 
   override def eligibleForAgreement: Boolean = false
+
+  override def status: String = "Moderated: " + moderation.justification
 }

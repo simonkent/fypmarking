@@ -3,6 +3,7 @@ package uk.ac.brunel.cs.fyp.model.assessment
 import uk.ac.brunel.cs.fyp.model.Submission
 
 trait DoubleMarkerAssessment extends Assessment {
+
   def assessment1: SingleMarkerAssessment
   def assessment2: SingleMarkerAssessment
   if (assessment1.marker==assessment2.marker) {
@@ -31,5 +32,7 @@ trait DoubleMarkerAssessment extends Assessment {
 
   def isDoubleMarked: Boolean = true
   def isFinal: Boolean
+
+  def status: String
 
 }
