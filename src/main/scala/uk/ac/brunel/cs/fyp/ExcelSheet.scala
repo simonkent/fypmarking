@@ -131,9 +131,10 @@ class ExcelSheet(val file: File, val workbook: XSSFWorkbook) {
       case Cell.CELL_TYPE_STRING => Some(cell.getStringCellValue())
       case Cell.CELL_TYPE_BOOLEAN => Some(cell.getBooleanCellValue())
       case Cell.CELL_TYPE_BLANK => None
-      case _ => throw new IllegalStateException("Cell Value Not Supported")
+      case _ => throw new IllegalStateException("Cell Value Not Supported in Cell (" + name + ") (R" + cell.getRowIndex + "C" + cell.getColumnIndex + ") in " + file.getName);
     }
   }
+      
 
   protected def setStringInNamedCell(value: String, name: String) {
     val cell: XSSFCell = getNamedXSSFCell(name)
