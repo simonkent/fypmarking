@@ -186,8 +186,8 @@ class MarkingEngine {
     assessment match {
       case dma: UnconfirmedDoubleMarkerAssessment => {
         agreement.studentNumber = dma.submission.student.number.trim.toInt
-        agreement.firstGrade = dma.assessment1.grade match { case Some(g: Grade) => g.grade }
-        agreement.secondGrade = dma.assessment2.grade match { case Some(g: Grade) => g.grade }
+        agreement.firstGrade = dma.assessment1.grade.getOrElse(throw new IllegalStateException()).grade
+        agreement.secondGrade = dma.assessment2.grade.getOrElse(throw new IllegalStateException()).grade
         agreement.programme = dma.submission.programme
         agreement.title = dma.submission.title
         agreement.marker = dma.assessment1.marker.name;
@@ -197,7 +197,7 @@ class MarkingEngine {
           agreement.grade = "";
           agreement.justification = Config.requiresAgreementText
         } else if (dma.eligibleForAgreement) {
-          agreement.grade = (new AutomaticAgreedDoubleMarkerAssessment(dma).grade) match { case Some(g: Grade) => g.grade };
+          agreement.grade = (new AutomaticAgreedDoubleMarkerAssessment(dma).grade).getOrElse(throw new IllegalStateException()).grade
           agreement.justification = Config.eligibleForAgreementText
         }
       }
@@ -230,8 +230,8 @@ class MarkingEngine {
     assessment match {
       case dma: DoubleMarkerAssessment => {
         moderationSheet.studentNumber = dma.submission.student.number.trim.toInt
-        moderationSheet.firstGrade = dma.assessment1.grade match { case Some(g: Grade) => g.grade }
-        moderationSheet.secondGrade = dma.assessment2.grade match { case Some(g: Grade) => g.grade }
+        moderationSheet.firstGrade = dma.assessment1.grade.getOrElse(throw new IllegalStateException()).grade
+        moderationSheet.secondGrade = dma.assessment2.grade.getOrElse(throw new IllegalStateException()).grade
         moderationSheet.programme = dma.submission.programme
         moderationSheet.title = dma.submission.title
         moderationSheet.marker = dma.assessment1.marker.name;
