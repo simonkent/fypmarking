@@ -3,10 +3,8 @@ package uk.ac.brunel.cs.fyp
 import scala.collection.mutable.Map
 import uk.ac.brunel.cs.fyp.model.assessment._
 import uk.ac.brunel.cs.fyp.model.{Grade, Student, Submission}
-import uk.ac.brunel.cs.fyp.ConcreteStudent
 import scala.Some
 import uk.ac.brunel.cs.fyp.model.assessment.SingleMarkerAssessment
-import uk.ac.brunel.cs.fyp.ConcreteSubmission
 import uk.ac.brunel.cs.fyp.model.assessment.UnconfirmedDoubleMarkerAssessment
 import uk.ac.brunel.cs.fyp.model.assessment.Agreement
 
