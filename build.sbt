@@ -9,7 +9,7 @@ scalacOptions ++= Seq("-deprecation", "-unchecked")
 fork in run := true
 
 javaOptions in run ++= Seq(
-    "-Xms256M", "-Xmx2G", "-XX:MaxPermSize=1024M", "-XX:+UseConcMarkSweepGC")
+    "-Xms256M", "-Xmx2G", "-XX:+UseConcMarkSweepGC")
 
 libraryDependencies += "com.typesafe" % "config" % "1.2.1"
 
