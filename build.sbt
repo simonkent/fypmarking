@@ -6,7 +6,10 @@ scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
-libraryDependencies += "org.scala-lang" % "scala-library" % "2.11.8"
+fork in run := true
+
+javaOptions in run ++= Seq(
+    "-Xms256M", "-Xmx2G", "-XX:MaxPermSize=1024M", "-XX:+UseConcMarkSweepGC")
 
 libraryDependencies += "com.typesafe" % "config" % "1.2.1"
 
