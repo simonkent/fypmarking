@@ -6,5 +6,6 @@ case class LearningOutcomes(
 		practicalApplication: Boolean,
 		evaluation: Boolean,
 		management: Boolean,
-		comunication: Boolean
+		comunication: Boolean,
+		ethics: Boolean
 )

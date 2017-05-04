@@ -17,7 +17,8 @@ class ExcelMarkingSheet(file: File) extends ExcelSheet(file, new XSSFWorkbook(ne
       getBooleanValueFromNamedCell("LO_Practical_Application"),
       getBooleanValueFromNamedCell("LO_Evaluation"),
       getBooleanValueFromNamedCell("LO_Management_And_Evaluation"),
-      getBooleanValueFromNamedCell("LO_Communication"))
+      getBooleanValueFromNamedCell("LO_Communication"),
+      getBooleanValueFromNamedCell("LO_Ethics"))
   }
   
   def programmeRequirements: ProgrammeRequirements = {
