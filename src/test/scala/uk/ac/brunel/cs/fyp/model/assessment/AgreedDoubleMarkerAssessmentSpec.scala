@@ -11,8 +11,8 @@ class AgreedDoubleMarkerAssessmentSpec extends UnitSpec with MockFactory {
   val mockStudent = mock[Student]
   val mockSubmission = mock[Submission]
 
-  val satisfiedLearningOutcomes = new LearningOutcomes(true, true, true, true, true, true)
-  val unsatisfiedLearningOutcomes = new LearningOutcomes(false, false, false, false, false, false)
+  val satisfiedLearningOutcomes = new LearningOutcomes(true, true, true, true, true, true,true)
+  val unsatisfiedLearningOutcomes = new LearningOutcomes(false, false, false, false, false, false,false)
   val aStarGrade = new Grade("A*")
   val aPlusGrade = new Grade("A+")
   val aGrade = new Grade("A")
