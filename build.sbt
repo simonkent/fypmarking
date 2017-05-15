@@ -20,3 +20,8 @@ libraryDependencies += "org.apache.poi" % "poi-ooxml" % "3.8"
 
 libraryDependencies +=
   "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
+  
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5"
+
+

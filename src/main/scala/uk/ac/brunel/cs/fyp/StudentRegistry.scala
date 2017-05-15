@@ -1,5 +1,8 @@
 package uk.ac.brunel.cs.fyp
 
+import org.apache.commons.lang3.StringUtils
+import uk.ac.brunel.cs.fyp.config.Config
+
 import scala.collection.mutable.Map
 import uk.ac.brunel.cs.fyp.model.assessment._
 import uk.ac.brunel.cs.fyp.model.{Grade, Student, Submission}
@@ -15,7 +18,10 @@ case class ConcreteStudent(val number: String) extends Student {
 case class ConcreteSubmission(val student: Student, val programme: String, val title: String) extends Submission {
   override def equals(other: Any)= {
     other match {
-      case that: Submission => this.student==that.student && this.programme==that.programme && this.title.equalsIgnoreCase(that.title) 
+			case that: Submission => {
+				this.student==that.student && this.programme==that.programme && StringUtils.getLevenshteinDistance(this.title,that.title) < Config.matchingThreshold
+			}
+      //case that: Submission => this.student==that.student && this.programme==that.programme && this.title.equalsIgnoreCase(that.title)
     }
   }
 }

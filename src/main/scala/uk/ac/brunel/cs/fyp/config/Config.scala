@@ -22,6 +22,8 @@ object Config {
 
   lazy val moderationInDirectory = conf.getString("files.moderationInDirectory")
 
+  lazy val matchingThreshold = conf.getInt("matchingThreshold")
+
   lazy val eligibleForAgreementText = conf.getString("text.eligibleForAgreement")
   lazy val requiresAgreementText = conf.getString("text.requiresAgreement")
   lazy val requiresModerationBecauseOfGradeDifference = conf.getString("text.requiresModerationBecauseOfMarkerDifference")
