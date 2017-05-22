@@ -6,11 +6,11 @@ class AgreedDoubleMarkerAssessment(unconfirmedAssessment: UnconfirmedDoubleMarke
 	val agreedGrade = checkedGrade(agreement.grade)
   
 	if (!assessmentsWithinLimits) {
-	  throw new IllegalArgumentException("Cannot create an Agreed Double Marker Assessment unless two grades are within limits")
+	  throw new IllegalArgumentException(assessment1.submission.student + " Cannot create an Agreed Double Marker Assessment unless two grades are within limits")
 	}
 
 	if (!agreedGradeWithinBoundary) {
-	  throw new IllegalArgumentException("Cannot create an Agreed Double Marker Assessment unless proposed grades are within boundaries")
+	  throw new IllegalArgumentException(assessment1.submission.student + " Cannot create an Agreed Double Marker Assessment unless proposed grades are within boundaries")
 	}
 
   protected def agreedGradeWithinBoundary: Boolean = {
